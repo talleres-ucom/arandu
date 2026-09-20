@@ -4,6 +4,7 @@
   "hostRequirements": {
     "cpus": 2
   },
+  "containerEnv": { "UV_LINK_MODE": "copy" },
   "postCreateCommand": "pip install --upgrade uv && uv sync && uv run pytest -q",
   "customizations": {
     "vscode": {
