@@ -78,37 +78,10 @@ choque de horarios esta mal, aunque rechace.
 - Reinscripcion a una materia de la que se dio de baja en el mismo periodo -> permitida si R1 a R5 lo
   permiten; R7 solo mira inscripciones **activas**.
 
-## 5. Mapa de defectos sembrados
-
-Cada regla tiene un modo de fallo caracteristico. Sembrar uno por familia:
-
-| Regla | Defecto natural a sembrar |
-|---|---|
-| R1 | Extremo excluyente: rechaza la solicitud hecha justo en la apertura |
-| R2 | Confunde *cursada* con *aprobada* |
-| R3 | Cuenta las bajas como ocupando cupo |
-| R4 | Compara con `>` en vez de `>=`, o al reves |
-| R5 | Usa `<=` en el solapamiento y marca como choque dos clases contiguas |
-| R6 | Plazo excluyente, o la baja no libera cupo |
-| R8 | Evalua en otro orden y devuelve un motivo de rechazo plausible pero incorrecto |
-
-Los tres mas productivos para ensenar son **R5, R3 y R8**: producen un sistema que *parece*
-funcionar, pasa los casos obvios y falla en el borde. Es el perfil exacto del codigo generado que se
-acepta sin verificar, que es la tesis del taller.
-
-## 6. Fuera de alcance en la v1
+## 5. Fuera de alcance en la v1
 
 Lista de espera · aranceles y pagos · equivalencias entre planes · autenticacion y roles ·
 notificaciones · historico de auditoria · concurrencia real entre solicitudes simultaneas.
 
 La concurrencia es tentadora y hay que resistirla: convierte el caso en un problema de sistemas
 distribuidos y el taller no es sobre eso.
-
-## 7. Pendientes para cerrar la v1
-
-1. ~~Stack y version congelada~~ — **cerrado: Python 3.13 + uv** (18-09-2026).
-2. Valor definitivo del maximo de materias (R4) y del minimo de aprobacion del plan (R2).
-3. Fixtures: cuantos estudiantes, materias y comisiones minimos para que los siete casos limitrofes
-   de la seccion 4 sean reproducibles.
-4. Que modulo se usa como "modulo ajeno" en S1 y S2 — recomendacion: el evaluador de R5, legible,
-   autocontenido y con el defecto mas instructivo.
