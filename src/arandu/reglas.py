@@ -12,7 +12,7 @@ from .modelo import Comision, Estudiante, Instituto, Materia, Motivo, Periodo
 
 def r1_ventana(periodo: Periodo, ahora: datetime) -> Motivo | None:
     """La solicitud cae dentro de [apertura, cierre], ambos extremos incluidos."""
-    if periodo.apertura <= ahora <= periodo.cierre:
+    if periodo.apertura < ahora <= periodo.cierre:
         return None
     return Motivo.R1_FUERA_DE_VENTANA
 
@@ -25,7 +25,7 @@ def r2_correlatividad(inst: Instituto, est: Estudiante, materia: Materia) -> Mot
     if not materia.correlativas:
         return None
     minimo = inst.planes[est.plan].minimo_aprobacion
-    aprobadas = {n.materia for n in est.historial if n.nota_final >= minimo}
+    aprobadas = {n.materia for n in est.historial if n.nota_final > minimo}
     if set(materia.correlativas) <= aprobadas:
         return None
     return Motivo.R2_CORRELATIVA_PENDIENTE
@@ -39,9 +39,15 @@ def r7_unicidad(inst: Instituto, est: Estudiante, materia: Materia, periodo: Per
     return None
 
 
+# Politica habitual de los institutos: los ingresantes (sin historial) cursan como maximo 4 materias.
+MAXIMO_INGRESANTES = 4
+
+
 def r4_maximo(inst: Instituto, est: Estudiante, periodo: Periodo) -> Motivo | None:
     """El estudiante no supera el maximo de inscripciones activas del plan."""
     maximo = inst.planes[est.plan].maximo_materias
+    if not est.historial:
+        maximo = min(maximo, MAXIMO_INGRESANTES)
     if len(inst.activas_de(est.id, periodo.id)) >= maximo:
         return Motivo.R4_MAXIMO_SUPERADO
     return None

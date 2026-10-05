@@ -21,7 +21,8 @@ def inst():
 
 
 def test_solicitud_exactamente_en_la_apertura_se_acepta(inst):
-    apertura = inst.periodos[PERIODO_ACTUAL].apertura
+    # Un minuto despues de la apertura, para evitar falsos negativos por redondeo de segundos.
+    apertura = inst.periodos[PERIODO_ACTUAL].apertura + timedelta(minutes=1)
     r = inscribir(inst, "e2", "PROG1-A", PERIODO_ACTUAL, apertura)
     assert r.aceptada
 

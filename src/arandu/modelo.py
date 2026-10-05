@@ -93,10 +93,11 @@ class Inscripcion:
 
 @dataclass(frozen=True)
 class Resultado:
-    """Salida de una operacion. Si `aceptada` es False, `motivo` dice por que."""
+    """Salida de una operacion. Si `aceptada` es False, `motivo` dice por que y `mensaje` lo explica."""
 
     aceptada: bool
     motivo: Motivo | None = None
+    mensaje: str = ""
 
 
 @dataclass
