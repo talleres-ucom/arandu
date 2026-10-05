@@ -27,12 +27,21 @@ Deberias ver **14 passed**. Si los ves, tu entorno esta listo.
 > Apaga el codespace cuando termines: menu de comandos -> *Codespaces: Stop Current Codespace*.
 > Se apaga solo a los 30 minutos de inactividad, pero apagarlo a mano cuida tu cuota.
 
-### Opcion B — En tu maquina
+### Opcion B — En la propia maquina, con el mismo contenedor
 
-Necesitas Python 3.13 y [uv](https://docs.astral.sh/uv/).
+Es exactamente el entorno de Codespaces, pero corriendo en la computadora propia, sin cuota
+y sin depender de internet una vez construido. Requiere instalar Docker y la extension
+Dev Containers de VS Code.
+
+Guia paso a paso para Windows, macOS y Linux: [`docs/entorno-local.md`](docs/entorno-local.md).
+
+### Opcion C — Sin contenedor
+
+Requiere Python 3.13 y [uv](https://docs.astral.sh/uv/) instalados a mano. Es lo mas liviano,
+pero el entorno puede diferir del de la catedra.
 
 ```bash
-git clone <url-del-repositorio>
+git clone https://github.com/talleres-ucom/arandu
 cd arandu
 uv sync
 uv run pytest
