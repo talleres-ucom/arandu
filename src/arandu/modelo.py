@@ -25,6 +25,8 @@ class Motivo(str, Enum):
     R3_SIN_CUPO = "R3_sin_cupo"
     R6_FUERA_DE_PLAZO = "R6_fuera_de_plazo_de_baja"
     R6_SIN_INSCRIPCION = "R6_inscripcion_inexistente"
+    # Demo de S7: motivo para el pedido nuevo. Cuando aplica lo deciden los criterios.
+    LIMITE_DIARIO = "limite_diario_superado"
 
 
 @dataclass(frozen=True)
