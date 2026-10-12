@@ -29,7 +29,7 @@ def inscribir(
     comprobaciones = (
         lambda: reglas.r1_ventana(per, ahora),
         lambda: reglas.r2_correlatividad(inst, est, mat),
-        lambda: reglas.r7_unicidad(inst, est, mat, per),
+        lambda: reglas.r7_unicidad(inst, est, com, per),
         lambda: reglas.r4_maximo(inst, est, per),
         lambda: reglas.r5_choque(inst, est, com, per),
         lambda: reglas.r3_cupo(inst, com, per),
@@ -69,7 +69,6 @@ def dar_de_baja(
             i.estudiante == estudiante_id
             and i.comision == comision_id
             and i.periodo == periodo_id
-            and i.estado is Estado.ACTIVA
         ):
             i.estado = Estado.BAJA
             return Resultado(aceptada=True)

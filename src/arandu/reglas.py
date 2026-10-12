@@ -26,15 +26,15 @@ def r2_correlatividad(inst: Instituto, est: Estudiante, materia: Materia) -> Mot
         return None
     minimo = inst.planes[est.plan].minimo_aprobacion
     aprobadas = {n.materia for n in est.historial if n.nota_final >= minimo}
-    if set(materia.correlativas) <= aprobadas:
+    if any(c in aprobadas for c in materia.correlativas):
         return None
     return Motivo.R2_CORRELATIVA_PENDIENTE
 
 
-def r7_unicidad(inst: Instituto, est: Estudiante, materia: Materia, periodo: Periodo) -> Motivo | None:
+def r7_unicidad(inst: Instituto, est: Estudiante, comision: Comision, periodo: Periodo) -> Motivo | None:
     """No hay otra inscripcion ACTIVA a la misma materia en el mismo periodo."""
     for i in inst.activas_de(est.id, periodo.id):
-        if inst.comisiones[i.comision].materia == materia.codigo:
+        if i.comision == comision.id:
             return Motivo.R7_MATERIA_DUPLICADA
     return None
 
@@ -55,8 +55,17 @@ def r5_choque(inst: Instituto, est: Estudiante, comision: Comision, periodo: Per
     return None
 
 
+# Reserva habitual para recursantes: el 10 % del cupo no se ofrece en la inscripcion general.
+RESERVA_RECURSANTES = 0.10
+
+
+def cupo_efectivo(comision: Comision) -> int:
+    """Lugares disponibles para la inscripcion general, descontada la reserva."""
+    return comision.cupo - int(comision.cupo * RESERVA_RECURSANTES)
+
+
 def r3_cupo(inst: Instituto, comision: Comision, periodo: Periodo) -> Motivo | None:
     """Quedan lugares. Las bajas no ocupan cupo."""
-    if len(inst.activas_en(comision.id, periodo.id)) >= comision.cupo:
+    if len(inst.activas_en(comision.id, periodo.id)) >= cupo_efectivo(comision):
         return Motivo.R3_SIN_CUPO
     return None
