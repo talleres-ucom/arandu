@@ -10,7 +10,7 @@ import pytest
 
 from arandu.fixtures import PERIODO_ACTUAL, instituto_arandu
 from arandu.inscripcion import dar_de_baja, inscribir
-from arandu.modelo import Comision, Franja, Motivo
+from arandu.modelo import Comision, Franja, Materia, Motivo
 
 DENTRO = datetime(2026, 9, 10, 20, 0)
 
@@ -103,6 +103,67 @@ def test_misma_materia_en_otra_comision_se_rechaza(inst):
 def test_cupo_cero_rechaza_siempre(inst):
     r = inscribir(inst, "e1", "BD1-B", PERIODO_ACTUAL, DENTRO)
     assert not r.aceptada and r.motivo is Motivo.R3_SIN_CUPO
+
+
+def test_r4_permite_exactamente_6_inscripciones_activas(inst):
+    estudiante_id = "e99"
+    inst.estudiantes[estudiante_id] = type(inst.estudiantes["e2"])(
+        estudiante_id,
+        "Estudiante 99",
+        inst.estudiantes["e2"].plan,
+    )
+
+    for idx in range(7):
+        codigo = f"R4-{idx}"
+        inst.materias[codigo] = Materia(codigo, f"Materia {idx}", "AS-2026")
+        inst.comisiones[f"{codigo}-A"] = Comision(
+            f"{codigo}-A",
+            codigo,
+            cupo=30,
+            franjas=(Franja(idx % 5, time(9 + idx, 0), time(10 + idx, 0)),),
+        )
+        if idx < 6:
+            r = inscribir(inst, estudiante_id, f"{codigo}-A", PERIODO_ACTUAL, DENTRO)
+            assert r.aceptada, f"la inscripcion {idx + 1} deberia aceptarse"
+        else:
+            r = inscribir(inst, estudiante_id, f"{codigo}-A", PERIODO_ACTUAL, DENTRO)
+            assert not r.aceptada and r.motivo is Motivo.R4_MAXIMO_SUPERADO
+
+
+def test_r4_no_cuenta_bajas_en_el_limite(inst):
+    estudiante_id = "e98"
+    inst.estudiantes[estudiante_id] = type(inst.estudiantes["e2"])(
+        estudiante_id,
+        "Estudiante 98",
+        inst.estudiantes["e2"].plan,
+    )
+
+    for idx in range(7):
+        codigo = f"R4B-{idx}"
+        inst.materias[codigo] = Materia(codigo, f"Baja {idx}", "AS-2026")
+        inst.comisiones[f"{codigo}-A"] = Comision(
+            f"{codigo}-A",
+            codigo,
+            cupo=30,
+            franjas=(Franja(idx % 5, time(8 + idx, 0), time(9 + idx, 0)),),
+        )
+        if idx < 6:
+            assert inscribir(inst, estudiante_id, f"{codigo}-A", PERIODO_ACTUAL, DENTRO).aceptada
+
+    assert dar_de_baja(inst, estudiante_id, "R4B-0-A", PERIODO_ACTUAL, DENTRO).aceptada
+    r = inscribir(inst, estudiante_id, "R4B-6-A", PERIODO_ACTUAL, DENTRO)
+    assert r.aceptada, "la baja debe liberar el lugar para la siguiente inscripcion"
+
+
+def test_baja_libera_cupo_para_la_siguiente_inscripcion(inst):
+    """Cuando una inscripcion activa se da de baja, el cupo debe quedar libre enseguida."""
+    assert inscribir(inst, "e1", "ALG1-A", PERIODO_ACTUAL, DENTRO).aceptada
+    assert inscribir(inst, "e2", "ALG1-A", PERIODO_ACTUAL, DENTRO).aceptada
+    assert inscribir(inst, "e3", "ALG1-A", PERIODO_ACTUAL, DENTRO).motivo is Motivo.R3_SIN_CUPO
+
+    assert dar_de_baja(inst, "e2", "ALG1-A", PERIODO_ACTUAL, DENTRO).aceptada
+    r = inscribir(inst, "e3", "ALG1-A", PERIODO_ACTUAL, DENTRO)
+    assert r.aceptada, "la baja debe liberar el cupo de inmediato para la siguiente inscripcion"
 
 
 def test_orden_de_evaluacion_el_primer_motivo_manda(inst):
