@@ -71,7 +71,7 @@ def dar_de_baja(
             and i.periodo == periodo_id
             and i.estado is Estado.ACTIVA
         ):
-            # BUG: la baja no libera el cupo ni cambia el estado de la inscripcion.
+            i.estado = Estado.BAJA
             return Resultado(aceptada=True)
 
     return Resultado(aceptada=False, motivo=Motivo.R6_SIN_INSCRIPCION)
