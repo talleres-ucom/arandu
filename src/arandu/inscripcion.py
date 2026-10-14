@@ -1,8 +1,16 @@
-"""Orquestacion: evalua las reglas en el orden del contrato y decide.
+"""Orquestador del caso de inscripcion.
 
-R8 — orden de evaluacion: R1 -> R2 -> R7 -> R4 -> R5 -> R3.
-Se rechaza con EL PRIMER motivo que aplique, no con la lista de todos los motivos.
-El orden es parte del contrato: hace que el motivo de rechazo sea verificable.
+Este modulo es el punto de entrada del proceso de negocio: recibe una solicitud de
+inscripcion o baja y decide si se acepta o se rechaza segun el contrato del dominio.
+No implementa la logica de cada regla; esa vive en `reglas.py` y este archivo solo
+coordina la evaluacion en el orden definido por R8.
+
+Orden de evaluacion (contrato):
+R1 -> R2 -> R7 -> R4 -> R5 -> R3
+
+La primera regla que devuelve un motivo es la que gana. Eso hace que el rechazo sea
+determinista y verificable, y que un caso con varios motivos posibles quede resuelto
+por el primero que aplique.
 """
 
 from datetime import datetime
@@ -20,7 +28,20 @@ def inscribir(
     periodo_id: str,
     ahora: datetime,
 ) -> Resultado:
-    """Intenta inscribir al estudiante en la comision. No lanza excepciones: devuelve Resultado."""
+    """Intenta aceptar una inscripcion para un estudiante en una comision.
+
+    La operacion aplica el contrato de la v1 en orden estricto:
+    1) verifica la ventana de inscripcion (R1),
+    2) correlatividad (R2),
+    3) unicidad por materia (R7),
+    4) maximo de materias activas (R4),
+    5) choque de horarios (R5),
+    6) cupo disponible (R3).
+
+    Si alguna regla rechaza, la funcion devuelve `Resultado(aceptada=False, motivo=...)` y
+    no registra la inscripcion. Si todas pasan, agrega una inscripcion activa para ese
+    estudiante, comision y periodo con el instante de solicitud recibido.
+    """
     est = inst.estudiantes[estudiante_id]
     com = inst.comisiones[comision_id]
     per = inst.periodos[periodo_id]
@@ -59,7 +80,16 @@ def dar_de_baja(
     periodo_id: str,
     ahora: datetime,
 ) -> Resultado:
-    """R6 — la baja se admite hasta el plazo del periodo, inclusive."""
+    """Procesa una baja de una inscripcion activa dentro del plazo vigente.
+
+    R6 define dos reglas simples: la baja solo puede hacerse hasta el plazo de baja del
+    periodo, inclusive; y si la inscripcion existe y esta activa, se marca como BAJA y deja
+    de contar para R3, R4 y R5.
+
+    Si el momento supera el plazo, la operacion rechaza con `R6_FUERA_DE_PLAZO`. Si no existe
+    una inscripcion activa para esa combinacion estudiante-comision-periodo, devuelve
+    `R6_SIN_INSCRIPCION`.
+    """
     per = inst.periodos[periodo_id]
     if ahora > per.plazo_de_baja:
         return Resultado(aceptada=False, motivo=Motivo.R6_FUERA_DE_PLAZO)

@@ -37,3 +37,10 @@ produccion.
 **Que cambie de lo que me devolvio:** lo que pedí fue una prueba de regresion centrada en el caso de baja y un arreglo minimo que marca la inscripcion como BAJA para que el cupo se libere de inmediato y no siga contandose como activa.
 **Sorpresas:** la falla no estaba aislada en una regla: el mismo problema impacta R3, R4 y R7, porque las bajas no se consideran "inactivas" para la evaluacion.
 
+**Tarea:** T3 · Documentar inscripcion.py. Solo se tocan docstrings y comentarios; el comportamiento no debe cambiar. La documentacion debe explicar el flujo de la inscripcion y de la baja de acuerdo con el contrato, no solo con la implementacion actual.
+**Nivel declarado:** N2
+**Por que ese nivel:** la tarea es de alcance acotado y de bajo riesgo, ya que no cambia logicamente el dominio ni la ejecucion del programa; el riesgo principal es que la documentacion sea inexacta respecto del contrato y genere confusion sobre el orden de reglas.
+**Como lo verifique:** revisé el modulo [src/arandu/inscripcion.py](src/arandu/inscripcion.py), comparé la descripcion con el orden contractual R1 -> R2 -> R7 -> R4 -> R5 -> R3 y corrí la suite relevante para confirmar que la documentacion no introdujo cambios funcionales: `python -m pytest tests/test_casos_limitrofes.py -q`.
+**Que cambie de lo que me devolvio:** pedí una documentacion que explicara la funcion de orquestacion del modulo, el significado de devolver el primer motivo de rechazo, y el efecto de una baja exitosa sobre la inscripcion activa. Ajusté el texto para que no describa solo la implementacion sino el comportamiento contractual.
+**Sorpresas:** la parte mas importante fue mantener la documentacion fiel al contrato: no basta con explicar lo que el codigo hace ahora, sino tambien la regla de prioridad del rechazo y que la baja debe operar sobre inscripciones activas dentro del plazo del periodo.
+
