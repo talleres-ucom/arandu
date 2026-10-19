@@ -20,13 +20,7 @@
 - **entonces** …
 - **Prueba:** `tests/test_pedido_s8.py::test_c1_…`
 
-## 3. Contraste con la implementación de otro equipo (rama `s8-referencia`)
-
-| Prueba | En nuestra rama | En `s8-referencia` | ¿Defecto o decisión distinta? | Qué pregunta lo habría resuelto |
-|---|---|---|---|---|
-| | | | | |
-
-## 5. Uso de asistentes
+## 3. Uso de asistentes
 
 - **Asistente, modo y modelo:**
 - **Qué le pedimos:**
