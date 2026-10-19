@@ -1,7 +1,6 @@
 # Práctica de S8 · Dos pedidos para especificar
 
-Cada par trabaja **uno** de estos pedidos (la docente asigna cuál). Los dos llegaron así, sin más
-detalle. Los motivos de rechazo nuevos ya están en `src/arandu/modelo.py`: `HORAS_SEMANALES` y
+Cada par trabaja **uno** de estos pedidos. Los dos llegaron así, sin más detalle. Los motivos de rechazo nuevos ya están en `src/arandu/modelo.py`: `HORAS_SEMANALES` y
 `TERCERA_CURSADA`.
 
 ## Pedido 1 · Tope de horas semanales

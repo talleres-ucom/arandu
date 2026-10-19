@@ -20,14 +20,7 @@
 - **entonces** …
 - **Prueba:** `tests/test_pedido_s8.py::test_c1_…`
 
-## 3. La prueba de las dos personas
-
-El par vecino (mismo pedido) leyó el criterio ___ y escribió su prueba sin ver la nuestra.
-
-- ¿Verifican lo mismo? Sí / No
-- Si no: ¿qué parte del criterio admitía otra lectura? ¿Cómo quedó reescrito?
-
-## 4. Contraste con la implementación de otro equipo (rama `s8-referencia`)
+## 3. Contraste con la implementación de otro equipo (rama `s8-referencia`)
 
 | Prueba | En nuestra rama | En `s8-referencia` | ¿Defecto o decisión distinta? | Qué pregunta lo habría resuelto |
 |---|---|---|---|---|
