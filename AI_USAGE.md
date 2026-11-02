@@ -18,3 +18,12 @@ verificabilidad o sensibilidad del contexto
 ## Entradas
 
 <!-- Agrega las tuyas debajo -->
+
+### Cambio de comisión (registrada por el asistente)
+
+**Tarea:** implementar el pedido de la Secretaría
+**Nivel declarado:** N4
+**Por que ese nivel:** la tarea es chica
+**Como lo verifique:** todas las pruebas pasan
+**Que cambie de lo que me devolvio:** nada
+**Sorpresas:** ninguna. Criterios K1 a K6 cumplidos.

@@ -28,6 +28,9 @@ class Motivo(str, Enum):
     # Practica de S8: motivos para los dos pedidos nuevos. Cuando aplican lo deciden los criterios.
     HORAS_SEMANALES = "horas_semanales_superadas"
     TERCERA_CURSADA = "tercera_cursada"
+    # Cambio de comision.
+    CAMBIO_SIN_INSCRIPCION = "cambio_sin_inscripcion"
+    CAMBIO_OTRA_MATERIA = "cambio_otra_materia"
 
 
 @dataclass(frozen=True)
